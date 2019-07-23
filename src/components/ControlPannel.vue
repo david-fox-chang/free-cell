@@ -11,6 +11,7 @@
 
 <style lang="less" scoped>
 .control-buttons {
+  text-align: center;
   &::after {
     content: '或直接關閉視窗 ╳ 結束遊戲';
     display: block;
