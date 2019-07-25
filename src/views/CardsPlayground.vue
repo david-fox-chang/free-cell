@@ -20,7 +20,9 @@
       v-for="i in 4"
       :key="`opencell${i}`"
       v-model="$data[`opencell${i}`]"
-      group="people"
+      :group="{ name: 'people', pull: 'clone' /*, put: false */ }"
+      :sort="false"
+      :disabled="disabled"
       @start="drag=true"
       @end="drag=false"
       tag="div"
@@ -34,6 +36,7 @@
       :key="`foundation${i}`"
       v-model="$data[`foundation${i}`]"
       group="people"
+      fillter=":not(.dag)"
       @start="drag=true"
       @end="drag=false"
       tag="div"
@@ -41,6 +44,7 @@
     <span v-for="element in $data[`foundation${i}`]" :key="element">{{ i }} - {{ element }}</span>
     <hr>
     </draggable>
+    <input type="checkbox" v-model="disabled">
   </div>
 </template>
 
@@ -70,12 +74,12 @@ export default {
     ), {});
 
     console.log($return);
-    return { ...$return };
+    return { disabled: false, ...$return };
   },
   created() {
     const pokers = lodash.shuffle('♠♣♥♦').map(i => [
       'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'j', 'q', 'k',
-    ].map(n => `${i}-${n}`)).flat();
+    ].map((n, num) => ({ num: num + 1, name: `${i}-${n}`, fixed: true }))).flat();
     console.log(pokers, this.cascade7.push(...lodash.shuffle(pokers)));
   },
   methods: {
