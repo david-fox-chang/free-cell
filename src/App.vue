@@ -8,4 +8,5 @@
 @import './styles/font-roboto.css';
 @import './styles/animate.min.css';
 @import './styles/global.less';
+@import './styles/pokers.less';
 </style>
