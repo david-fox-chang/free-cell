@@ -29,7 +29,7 @@ const Wrapper = styled.section`
 `;
 
 const svgg = async () => {
-  const m = await import('./Apoker-c01.svg').then(obj => {
+  const m = await import('./Apoker-c01.svg').then((obj) => {
     console.log(obj);
     return obj.default;
   });
