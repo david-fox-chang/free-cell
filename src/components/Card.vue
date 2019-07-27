@@ -1,16 +1,7 @@
 <template>
-  <div>123
-    <svg></svg>
-  </div>
+  <div class="card" :class="['card', `poker-${ poker }`]"></div>
 </template>
 
 <script>
-
-export default {
-  props: {
-    isDragable: {
-      default: true,
-    },
-  },
-};
+export default { props: { poker: { type: String, required: true } } };
 </script>
