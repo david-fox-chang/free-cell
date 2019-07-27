@@ -18,6 +18,7 @@ module.exports = {
       .set('@modules', resolve('node_modules'))
       .set('@routes', resolve('src/router/routes.js'))
       .set('@img', resolve('src/assets/img'))
+      .set('@pokers', resolve('src/assets/pokers'))
       .set('@assets', resolve('src/assets'));
   },
   productionSourceMap: !1,
