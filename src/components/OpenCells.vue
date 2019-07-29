@@ -1,47 +1,43 @@
 <template>
-  <draggable v-model="list" group="people" @start="drag=true" @end="drag=false">
-    <cell
-      v-for="element in list"
-      :key="element"
-      :card="element"
-    >{{ element }}</cell>
-  </draggable>
+  <sortable-stack
+    class="opencell-wrapper"
+    :sort-configs="sortConfigs"
+    :list="list"
+  ></sortable-stack>
 </template>
 
-
 <script>
-import Draggable from 'vuedraggable';
-import Cell from './Cell.vue';
+import SortableStack from './SortableStack/Index.vue';
 
 export default {
   components: {
-    [['draggable']]: Draggable,
-    [['cell']]: Cell,
+    'sortable-stack': SortableStack,
   },
   props: {
     list: {
-      default: [],
-    },
-    maxLen: {
-      default: 1,
+      type: Array,
+      required: true,
     },
   },
-  methods: {
-    isOverload(newList, oldList, event, position) {
-      if (newList.length > 1) {
-        this.list = oldList;
-        this.$emit('over-load', { event, position });
-        return true;
-      }
-      return false;
+  data: () => ({
+    sortConfigs: {
+      group: { put: true },
+      // filter: '.card:not(:last-of-type)',
+      swapThreshold: 0.5,
     },
-  },
-  watch: {
-    list(newList, oldList, event, position) {
-      if (!this.isOverload(newList, oldList, event, position)) {
-        this.$emit('payload-accept', { event, position, pipe: 'step-record' });
-      }
-    },
-  },
+  }),
 };
 </script>
+
+<style lang="less">
+.opencell-wrapper {
+  width: 100px;
+  position: relative;
+  height: $width;
+  & > .card {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+</style>

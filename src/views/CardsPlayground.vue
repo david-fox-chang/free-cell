@@ -1,115 +1,74 @@
 <template>
-  <div class="cards-playground">
-    tableaux
-
-    <draggable
-      v-for="i in 8"
-      :key="`cascade${i}`"
-      v-model="$data[`cascade${i}`]"
-      group="people"
-      @start="drag=true"
-      @end="drag=false"
-      @change="change"
-      tag="div"
-    >cascade {{ i }}
-      <span v-for="element in $data[`cascade${i}`]" :key="element">{{element}}</span>
-      <hr>
-    </draggable>
-
-    <draggable
-      v-for="i in 4"
-      :key="`opencell${i}`"
-      v-model="$data[`opencell${i}`]"
-      :group="{ name: 'people', pull: 'clone' /*, put: false */ }"
-      :sort="false"
-      :disabled="disabled"
-      @start="drag=true"
-      @end="drag=false"
-      tag="div"
-    >opencell - {{ i }}
-    <span v-for="element in $data[`opencell${i}`]" :key="element">{{ element }}</span>
-    <hr>
-    </draggable>
-
-    <draggable
-      v-for="i in 4"
+  <div class="cards-playground tableaux">
+    <foundation-stack
+      class="foundation stack"
+      v-for="i in meta.foundation"
       :key="`foundation${i}`"
-      v-model="$data[`foundation${i}`]"
-      group="people"
-      fillter=":not(.dag)"
-      @start="drag=true"
-      @end="drag=false"
-      tag="div"
-    >foundation - {{ i }}
-    <span v-for="element in $data[`foundation${i}`]" :key="element">{{ i }} - {{ element }}</span>
-    <hr>
-    </draggable>
-    <input type="checkbox" v-model="disabled">
+      :list="$data[`foundation${i}`]"
+    ></foundation-stack>
+    <opencell-stack
+      class="opencell stack"
+      v-for="i in meta.opencell"
+      :key="`opencell${i}`"
+      :list="$data[`opencell${i}`]"
+    ></opencell-stack>
+    <cascade-stack
+      class="cascade stack"
+      v-for="i in meta.cascade"
+      :key="`cascade${i}`"
+      :list="$data[`cascade${i}`]"
+    ></cascade-stack>
   </div>
 </template>
 
 <script>
-import draggable from 'vuedraggable';
-import lodash from 'lodash';
-
-// import OpenCells from '../components/OpenCells.vue';
-
+import Cascade from '../components/Cascade.vue';
+import Foundation from '../components/Foundation.vue';
+import OpenCell from '../components/OpenCells.vue';
+import {
+  flitersInit, pokerInitData, pokersSetConst, watch, slicersInit,
+  test,
+} from '../components/util/index';
 
 export default {
   components: {
-    draggable,
-    // 'open-cells': OpenCells,
+    'cascade-stack': Cascade,
+    'foundation-stack': Foundation,
+    'opencell-stack': OpenCell,
   },
-  data() {
-    const $return = [
-      { name: 'cascade', num: 8 },
-      { name: 'opencell', num: 4 },
-      { name: 'foundation', num: 4 },
-    ].reduce((sum, { name, num }) => Object.assign(
-      sum,
-      ...Array.from(
-        Array(num),
-        (i, ind) => ({ [`${name}${ind + 1}`]: [] }),
-      ),
-    ), {});
-
-    console.log($return);
-    return { disabled: false, ...$return };
-  },
-  created() {
-    const pokers = lodash.shuffle('♠♣♥♦').map(i => [
-      'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'j', 'q', 'k',
-    ].map((n, num) => ({ num: num + 1, name: `${i}-${n}`, fixed: true }))).flat();
-    console.log(pokers, this.cascade7.push(...lodash.shuffle(pokers)));
+  data: () => ({
+    ...pokerInitData,
+    meta: {
+      ...pokersSetConst,
+    },
+  }),
+  mounted() {
+    // console.log(slicersInit);
+    // this.gameInit(flitersInit || slicersInit);
+    this.gameInit(flitersInit);
   },
   methods: {
-    change(...e) {
-      console.table(...e);
+    // initBulider: { keys, stacks }
+    gameInit({ keys, stacks }) {
+      keys.forEach((key) => {
+        if (key !== 'cascade0') this[key].push(...stacks[key]);
+      });
+      // this.cascade1.push(...test.cascade1.reverse());
     },
   },
-  watch: [
-    { name: 'cascade', num: 8 },
-    { name: 'opencell', num: 4 },
-    { name: 'foundation', num: 4 },
-  ].reduce((sum, { name, num }) => Object.assign(
-    sum,
-    ...Array.from(
-      Array(num),
-      (i, ind) => ({
-        [`${name}${ind + 1}`]: (newlist) => {
-          console.log(`${name}${ind + 1}`, newlist);
-          if (newlist.length > 1) {
-            console.log('fail', newlist.length);
-          }
-        },
-      }),
-    ),
-  ), {}),
+  watch,
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 div {
   border: solid 1px #F00;
 }
+</style>
+<style lang="less" scoped>
+
+.tableaux {
+  display: flex;
+}
+
 </style>
